@@ -1,0 +1,30 @@
+<html>
+<head>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div>
+        <span id="response"></span>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <span>-</span>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <input data-a2f type="number" min="0" max="9" placeholder="0" required>
+        <button onclick="myFunction()" data-button-validate>Send my A2F code</button>
+    </div>
+        <script src="autoinput.min.js"></script>
+        <script>
+                function myFunction(){
+                        response.style = "";
+                        const code = getNumbersCode();
+                        if(typeof code == 'string' || code.length != 6){
+                                response.style = "color: red;";
+                                return response.innerHTML = "Error !<br>Wrong A2F code.";
+                        }
+                        response.innerHTML = "Your a2f code is valid !";
+                }
+        </script>
+</body>
+</html>
