@@ -3,7 +3,7 @@
 
 <p align="center">
     <a href="https://github.com/pioupia/auto-input-a2f">
-        <img src="https://raw.githubusercontent.com/pioupia/auto-input-a2f/main/autoinputa2f.gif" height="140">
+        <img src="https://raw.githubusercontent.com/pioupia/auto-input-a2f/main/assets/autoinputa2f.gif" height="140">
     </a>
 </p>
 ## Installation
