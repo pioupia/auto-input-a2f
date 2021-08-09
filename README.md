@@ -11,12 +11,12 @@
 
 #### HTML
 ```html
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" id="auth" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="number" min="0" max="9" placeholder="0" required>
 ```
 
 If you want the plugin to automatically validate the a2f, put on your html element with the onlick eventlistener :
