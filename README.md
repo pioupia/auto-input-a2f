@@ -4,8 +4,14 @@
 ## Installation
 
 ```html
-<script src="autoinput.min.js"></script>
+<script src="https://pioupia.github.io/autoinputa2f/autoinput.min.js"></script>
 ```
+Or non minified :
+
+```html
+<script src="https://pioupia.github.io/autoinputa2f/autoinput.js"></script>
+```
+
 
 ## Usage
 
@@ -21,7 +27,7 @@
 
 If you want the plugin to automatically validate the a2f, put on your html element with the onlick eventlistener :
 ```html
-<button onclick="myFunction" data-button-validate>Send my A2F code</button>
+<button onclick="myFunction()" data-button-validate>Send my A2F code</button>
 ```
 
 #### JS
