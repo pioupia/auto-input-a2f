@@ -4,12 +4,12 @@
 ## Installation
 
 ```html
-<script src="https://pioupia.github.io/autoinputa2f/autoinput.min.js"></script>
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js"></script>
 ```
 Or non minified :
 
 ```html
-<script src="https://pioupia.github.io/autoinputa2f/autoinput.js"></script>
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.js"></script>
 ```
 
 
