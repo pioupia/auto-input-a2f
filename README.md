@@ -4,5 +4,5 @@
 ## Installation
 
 ```html
-<script src="autoinput.js"></script>
+<script src="autoinput.min.js"></script>
 ```
