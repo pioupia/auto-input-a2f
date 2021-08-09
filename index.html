@@ -19,7 +19,7 @@
                 function myFunction(){
                         response.style = "";
                         const code = parseInt(getNumbersCode());
-                        if(code.length !== 6){
+                        if(code.toString().length !== 6){
                                 response.style = "color: red;";
                                 return response.innerHTML = "Error !<br>Wrong A2F code.";
                         }
