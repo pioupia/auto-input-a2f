@@ -18,8 +18,8 @@
         <script>
                 function myFunction(){
                         response.style = "";
-                        const code = getNumbersCode();
-                        if(typeof code == 'string' || code.length != 6){
+                        const code = parseInt(getNumbersCode());
+                        if(code.length !== 6){
                                 response.style = "color: red;";
                                 return response.innerHTML = "Error !<br>Wrong A2F code.";
                         }
