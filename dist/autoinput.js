@@ -1,4 +1,4 @@
-/* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ */
+/* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ | MIT License */
 (() => {
     const allBoxes = document.querySelectorAll("[data-a2f]");
     if((allBoxes?.length||0)<2) return;
