@@ -1,10 +1,11 @@
 {
     "name": "auto-input-a2f",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Allows you to automatically change input once it is filled in. Then validate the form when all inputs are filled in correctly.",
     "repository": "https://github.com/pioupia/auto-input-a2f",
     "author": "Pioupia <pioupiadeux@gmail.com>",
     "license": "MIT",
     "main": "./dist/autoinput.min.js",
-    "module": "./dist/autoinput.esm.js"
+    "module": "./dist/autoinput.esm.js",
+    "keywords": ["front-end", "autoinput", "autochange", "a2f", "autoform"]
 }
