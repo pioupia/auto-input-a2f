@@ -1,10 +1,10 @@
 /* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ | MIT License */
 let allBoxes = [];
-function initAutoInput(options, callback){
-    typeof options.autoend != 'boolean' ? options.autoend = true : '';
-    typeof options.selectAuto != 'boolean' ? options.selectAuto = true : '';
-    typeof options.canPast != 'boolean' ? options.canPast = true : '';
-    typeof options.createAuto != 'boolean' ? options.createAuto = false : '';
+function initAutoInput(options={}, callback){
+    typeof options?.autoend != 'boolean' ? options.autoend = true : '';
+    typeof options?.selectAuto != 'boolean' ? options.selectAuto = true : '';
+    typeof options?.canPast != 'boolean' ? options.canPast = true : '';
+    typeof options?.createAuto != 'boolean' ? options.createAuto = false : '';
     options.parent ||= document.querySelector("[data-parent-a2f]") || 'a2fParent';
 
     if(options.createAuto){
