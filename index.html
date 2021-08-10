@@ -15,6 +15,7 @@
         function myFunctionTest(code){
                 if(isNaN(code) || code.toString().length !== 6){
                         response.style = "color: red;";
+                        deleteNumbersCode();
                         return response.innerHTML = "Error !<br>Wrong A2F code.";
                 }
                 response.innerHTML = "Your a2f code is valid !";
