@@ -60,7 +60,7 @@ function handlePaste(e) {
     }
 }
 function deleteNumbersCode(){
-    allBoxes.forEach(e =>  e.value = '0');
+    allBoxes.forEach(e =>  e.value = '');
 }
 function getNumbersCode(){
     if((allBoxes?.length||0)<2) return "Too little input reported";
