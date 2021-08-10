@@ -1,6 +1,6 @@
 {
     "name": "auto-input-a2f",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Allows you to automatically change input once it is filled in. Then validate the form when all inputs are filled in correctly.",
     "repository": "https://github.com/pioupia/auto-input-a2f",
     "author": "Pioupia <pioupiadeux@gmail.com>",

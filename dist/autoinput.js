@@ -8,8 +8,7 @@ function initAutoInput(options={}, callback){
     options.parent ||= document.querySelector("[data-parent-a2f]") || 'a2fParent';
 
     if(options.createAuto){
-        const parent = document.getElementById(options.parent);
-        if(!parent) return console.error("Parent does not exist.");
+        if(!options.parent) return console.error("Parent does not exist.");
         for(let i = 0; i < 6; i++){
             const e = document.createElement("input");
             e.setAttribute("data-a2f",'');
@@ -19,9 +18,9 @@ function initAutoInput(options={}, callback){
             if(i == 3){
                 const a = document.createElement("span");
                 a.innerHTML = "-";
-                parent.appendChild(a);
+                options.parent.appendChild(a);
             }
-            parent.appendChild(e)
+            options.parent.appendChild(e)
         }
     }
     allBoxes = document.querySelectorAll("[data-a2f]");
