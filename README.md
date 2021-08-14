@@ -66,7 +66,7 @@ deleteNumbersCode();
 
 If you want to get the actual a2f code of the user, you can call this function :
 ```js
-getNumbersCode() // => 123456
+getNumbersCode() // => 123456 (String)
 ```
 
 #### HTML
@@ -74,12 +74,12 @@ getNumbersCode() // => 123456
 (Only if the createAuto option is not activated)
 
 ```html
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
-<input data-a2f type="number" min="0" max="9" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
+<input data-a2f type="text" placeholder="0" required>
 ```
 
 If you want the plugin to automatically validate the a2f, put on your html element with the onlick eventlistener (only with autoend option activated) :
@@ -98,19 +98,23 @@ initAutoInput(options, myFunction);
 // Without callback
 function myFunction(){
   const a2fcode = getNumbersCode(); 
-  // -> 123456 (int)
+  // -> 123456 (String)
   // Check your a2f code if you want here.
 }
 
 
 // With callback
 function myFunction(code){
-  // code => 123456 (int)
+  // code => 123456 (String)
   // Check your a2f code if you want here.
 }
 ```
 
-#### Exemple 
+## Shortcut
+
+You can use keyboard shortcuts, such as the back or delete key that will allow you to delete the value and go back to the previous box, or use the right arrow to go right, the left arrow to go left, and finally, the one at the top to go to the last box to complete, and the one at the bottom to go to the first box to complete.
+
+## Exemple 
 
 ```html
 <div class="container">
@@ -126,8 +130,12 @@ initAutoInput({ createAuto: true }, myFunctionTest);
 
 function myFunctionTest(code){
     if(typeof code !== 'number') code = getNumbersCode();
-    console.log(code) // 123456
+    console.log(code) // 012345 (String)
 
     if(!check(code)) return deleteNumbersCode();
+}
+
+function check(code){
+  return code.length == 6 && code == '012345';
 }
 ```
