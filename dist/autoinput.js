@@ -1,73 +1,185 @@
 /* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ | MIT License */
-let allBoxes = [];
-let option = {autoend: true, selectAuto: true, canPast: true, createAuto: false, parent: document.querySelector("[data-parent-a2f]") || document.getElementById('a2fParent')};
-function initAutoInput(options={}, callback){
-   (option = {...option,...options});
-    if(option.createAuto){
-        if(!option.parent) return console.error("Parent does not exist.");
-        for(let i = 0; i < 6; i++){
-            const e = document.createElement("input");
-            e.setAttribute("data-a2f",'');
-            e.setAttribute("type",'text');
-            e.setAttribute("placeholder",'0');
-            e.setAttribute('required','');
-            if(i == 3){
-                const a = document.createElement("span");
-                a.innerHTML = "-";
-                option.parent.appendChild(a);
-            }
-            option.parent.appendChild(e)
-        }
-    }
-    allBoxes = document.querySelectorAll("[data-a2f]");
-    let array = [];
-    allBoxes.forEach(e => array.push(e));
-    if((allBoxes?.length||0)<2) return;
-    if(option.selectAuto) allBoxes[0].focus();
-    for(let i = 0; i < allBoxes.length; i++){
-        const e = allBoxes[i];
-        e.onpaste = t => handlePaste(t,callback);
-        e.onkeypress = t => t.preventDefault();
-        e.onkeyup = (t) => {
-            if(t.keyCode == 16 || t.keyCode == 20)return;
-            if([46,8].includes(t.keyCode)) e.value = '';
-            if([46,37,8].includes(t.keyCode)) return allBoxes[i-1]?.focus();
-            if([40,39,38].includes(t.keyCode))return t.keyCode == 39 ? allBoxes[i+1]?.focus() : t.keyCode == 38 ? allBoxes[allBoxes.length-1].focus() : allBoxes[0].focus();
-            if(isNaN(t.key)) return;
-            e.value = t.key;
-            if(array.filter(r => r.value).length === allBoxes.length && option.autoend){
-                if(callback) return callback(getNumbersCode());
-                return document.querySelector('[data-button-validate]')?.click();
-            }
-            allBoxes[i+1]?.focus();
-        }
-    };
-}
 
-function handlePaste(e,callback) {
-    e.stopPropagation();
-    e.preventDefault();
-    if(!option.canPast) return;
-    const clipboardData = e.clipboardData || window.clipboardData;
-    if(clipboardData){
-        const d = clipboardData.getData("Text").split('');
-        for(let i = 0; i < d.length; i++){
-            if(!d[i].match(/[0-9]/)) continue;
-            if(allBoxes[i]) allBoxes[i].value = d[i].toString();
-        }
-        if(!option.autoend) return;
-        return callback ? callback(getNumbersCode()) : document.querySelector('[data-button-validate]')?.click();
+class AutoInput {
+    /**
+     * The AutoInput class
+     * @param {object} options The options for the AutoInput.
+     * @param {boolean} options.autoEnd If the input should fired an event when the text is completed.
+     * @param {boolean} options.selectAuto If the input should auto select the first input field.
+     * @param {boolean} options.canPast If the input should allow pasting.
+     * @param {boolean} options.createAuto If the AutoInput should create the HTML inputs automatically.
+     * @param {HTMLElement} options.parent The parent were the child will automatically generate the HTML inputs.
+     * @param {HTMLElement} options.validate The validate button to validate the entry.
+     */
+    constructor(options = {}) {
+        this.autoEnd = options.autoEnd || true;
+        this.selectAuto = options.selectAuto || true;
+        this.canPast = options.canPast || true;
+        this.createAuto = options.createAuto || false;
+        this.parent = options.parent
+                        || document.getElementById("a2fParent")
+                        || document.querySelector("[data-parent-a2f]");
+        this.validate = options.validate || document.querySelector("[data-button-validate]");
+        this.boxes = null;
+
+        this.#init();
     }
-}
-function deleteNumbersCode(){
-    allBoxes.forEach(e =>  e.value = '');
-    if(option?.selectAuto) allBoxes[0]?.focus();
-}
-function getNumbersCode(){
-    if((allBoxes?.length||0)<2) return "Too little input reported";
-    let code = '';
-    allBoxes.forEach(e => {
-        code += e.value;
-    });
-    return code;
+
+    /**
+     * Create automatically input balises.
+     */
+    #initAuto() {
+        for (let i = 0; i < 6; i++) {
+            const el = document.createElement("input");
+            el.setAttribute("data-a2f", "");
+            el.setAttribute("type", "text");
+            el.setAttribute("placeholder", "0");
+            el.setAttribute("required", "");
+
+            if (i == 3) {
+                const span = document.createElement("span");
+                span.textContent = "-";
+                this.parent.appendChild(span);
+            }
+
+            this.parent.appendChild(el);
+        }
+    }
+
+    /**
+     * Initialize the AutoInput.
+     */
+    #init() {
+        if (this.createAuto && !this.parent)
+            throw new Error("The parent does not exist. Please fill the parent option, or create an element with the a2fParent id or the data-parent-a2f attribute.");
+        if (this.createAuto)
+            this.#initAuto();
+
+        this.boxes = (this.parent || document).querySelectorAll("[data-a2f]");
+        if (this.boxes.length < 2)
+            return;
+
+        if (this.selectAuto)
+            this.boxes[0].focus();
+
+        for (let i = 0; i < this.boxes.length; i++) {
+            const element = this.boxes[i];
+
+            element.onpaste = (e) => this.#handlePaste(e);
+            element.onkeypress = (e) => e.preventDefault();
+            element.onkeyup = event => this.#onKeyUp(event);
+        }
+    }
+
+    #canValidate() {
+        for (const element of this.boxes.values()) {
+            if (!element.value) {
+                this.canValidate = false;
+                return false;
+            }
+        }
+
+        this.canValidate = true;
+        this.validatingTime = Date.now();
+
+        setTimeout(() => {
+            if (this.validatingTime + 400 > Date.now())
+                return;
+
+            if (this.autoEnd) {
+                if (this.callback instanceof Function)
+                    return this.callback(this.getCode());
+                this.validate?.click();
+            }
+        }, 400);
+    }
+
+    #onKeyUp(event) {
+        const { key, target } = event;
+        event.preventDefault();
+
+        switch (key) {
+            case "Backspace":
+            case "Delete":
+                target.value = "";
+            case "ArrowLeft":
+                let prevElement = target.previousElementSibling;
+                if (prevElement?.tagName === "SPAN")
+                    prevElement = prevElement.previousElementSibling;
+                prevElement?.focus();
+                break;
+            case "ArrowRight":
+                let nextElement = target.nextElementSibling;
+                if (nextElement?.tagName === "SPAN")
+                    nextElement = nextElement.nextElementSibling;
+                nextElement?.focus();
+                break;
+            case "ArrowUp":
+                this.boxes.item(this.boxes.length - 1).focus();
+                break;
+            case "ArrowDown":
+                this.boxes[0].focus();
+                break;
+            default:
+                if (isNaN(key))
+                    return;
+                target.value = key;
+                this.#onKeyUp({ key: "ArrowRight", target, preventDefault: () => null });
+                this.#canValidate();
+                break;
+        } 
+    }
+
+    #handlePaste(event) {
+        if (!this.canPast)
+            return;
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        const clipboardData = event.clipboardData || window.clipboardData;
+        if (!clipboardData)
+            return;
+
+        const data = clipboardData.getData("Text");
+        const textLength = data.length > this.boxes.length ? this.boxes.length : data.length;
+        for (let i = 0; i < textLength; i++) {
+            if (isNaN(data[i]))
+                continue;
+
+            this.boxes[i].value = data[i];
+        }
+
+        this.#canValidate();
+    }
+
+    /**
+     * Register the callback to call when the code is validated.
+     * @param {Function} callback Callback to call when the code is validated.
+     */
+    onValidate(callback) {
+        this.callback = callback;
+    }
+
+    /**
+     * Get the input code. Can be incomplet if the input is not complete.
+     * @returns {string} The code in the input.
+     */
+    getCode() {
+        let code = "";
+        this.boxes.forEach((e) => {
+            code += e.value;
+        });
+
+        return code;
+    }
+
+    /**
+     * Reset all the input fields.
+     */
+    removeEntries() {
+        this.boxes.forEach((e) => {
+            e.value = "";
+        });
+    }
 }
