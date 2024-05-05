@@ -1,6 +1,17 @@
 /* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ | MIT License */
 
 class AutoInput {
+    #autoEnd;
+    #selectAuto;
+    #canPast;
+    #createAuto;
+    #parent;
+    #validate;
+    #onCreate;
+    #boxes;
+    #validatingTime;
+    #callback;
+
     /**
      * The AutoInput class
      * @param {object} options The options for the AutoInput.
@@ -8,19 +19,21 @@ class AutoInput {
      * @param {boolean} options.selectAuto If the input should auto select the first input field.
      * @param {boolean} options.canPast If the input should allow pasting.
      * @param {boolean} options.createAuto If the AutoInput should create the HTML inputs automatically.
+     * @param {Function} options.onCreate The callback when the AutoInput creates the HTML inputs.
      * @param {HTMLElement} options.parent The parent were the child will automatically generate the HTML inputs.
      * @param {HTMLElement} options.validate The validate button to validate the entry.
      */
     constructor(options = {}) {
-        this.autoEnd = options.autoEnd || true;
-        this.selectAuto = options.selectAuto || true;
-        this.canPast = options.canPast || true;
-        this.createAuto = options.createAuto || false;
-        this.parent = options.parent
+        this.#autoEnd = options.autoEnd || true;
+        this.#selectAuto = options.selectAuto || true;
+        this.#canPast = options.canPast || true;
+        this.#createAuto = options.createAuto || false;
+        this.#parent = options.parent
                         || document.getElementById("a2fParent")
                         || document.querySelector("[data-parent-a2f]");
-        this.validate = options.validate || document.querySelector("[data-button-validate]");
-        this.boxes = null;
+        this.#validate = options.validate || document.querySelector("[data-button-validate]");
+        this.#onCreate = options.onCreate;
+        this.#boxes = null;
 
         this.#init();
     }
@@ -30,19 +43,25 @@ class AutoInput {
      */
     #initAuto() {
         for (let i = 0; i < 6; i++) {
-            const el = document.createElement("input");
+            let el = document.createElement("input");
             el.setAttribute("data-a2f", "");
             el.setAttribute("type", "text");
             el.setAttribute("placeholder", "0");
             el.setAttribute("required", "");
 
+            if (this.#onCreate instanceof Function)
+                el = this.#onCreate(el, i) || el;
+
             if (i == 3) {
-                const span = document.createElement("span");
+                let span = document.createElement("span");
                 span.textContent = "-";
-                this.parent.appendChild(span);
+
+                span = this.#onCreate(span, i);
+                if (span)
+                    this.#parent.appendChild(span);
             }
 
-            this.parent.appendChild(el);
+            this.#parent.appendChild(el);
         }
     }
 
@@ -50,20 +69,20 @@ class AutoInput {
      * Initialize the AutoInput.
      */
     #init() {
-        if (this.createAuto && !this.parent)
+        if (this.#createAuto && !this.#parent)
             throw new Error("The parent does not exist. Please fill the parent option, or create an element with the a2fParent id or the data-parent-a2f attribute.");
-        if (this.createAuto)
+        if (this.#createAuto)
             this.#initAuto();
 
-        this.boxes = (this.parent || document).querySelectorAll("[data-a2f]");
-        if (this.boxes.length < 2)
+        this.#boxes = (this.#parent || document).querySelectorAll("[data-a2f]");
+        if (this.#boxes.length < 2)
             return;
 
-        if (this.selectAuto)
-            this.boxes[0].focus();
+        if (this.#selectAuto)
+            this.#boxes[0].focus();
 
-        for (let i = 0; i < this.boxes.length; i++) {
-            const element = this.boxes[i];
+        for (let i = 0; i < this.#boxes.length; i++) {
+            const element = this.#boxes[i];
 
             element.onpaste = (e) => this.#handlePaste(e);
             element.onkeypress = (e) => e.preventDefault();
@@ -72,24 +91,24 @@ class AutoInput {
     }
 
     #canValidate() {
-        for (const element of this.boxes.values()) {
+        for (const element of this.#boxes.values()) {
             if (!element.value) {
-                this.canValidate = false;
+                this.#validatingTime = 0;
                 return false;
             }
         }
 
-        this.canValidate = true;
-        this.validatingTime = Date.now();
+        this.#validatingTime = Date.now();
 
         setTimeout(() => {
-            if (this.validatingTime + 400 > Date.now())
+            if (this.#validatingTime &&
+                this.#validatingTime + 400 > Date.now())
                 return;
 
-            if (this.autoEnd) {
-                if (this.callback instanceof Function)
-                    return this.callback(this.getCode());
-                this.validate?.click();
+            if (this.#autoEnd) {
+                if (this.#callback instanceof Function)
+                    return this.#callback(this.getCode());
+                this.#validate?.click();
             }
         }, 400);
     }
@@ -115,10 +134,10 @@ class AutoInput {
                 nextElement?.focus();
                 break;
             case "ArrowUp":
-                this.boxes.item(this.boxes.length - 1).focus();
+                this.#boxes.item(this.#boxes.length - 1).focus();
                 break;
             case "ArrowDown":
-                this.boxes[0].focus();
+                this.#boxes[0].focus();
                 break;
             default:
                 if (isNaN(key))
@@ -131,7 +150,7 @@ class AutoInput {
     }
 
     #handlePaste(event) {
-        if (!this.canPast)
+        if (!this.#canPast)
             return;
 
         event.stopPropagation();
@@ -142,12 +161,14 @@ class AutoInput {
             return;
 
         const data = clipboardData.getData("Text");
-        const textLength = data.length > this.boxes.length ? this.boxes.length : data.length;
+        const textLength = data.length > this.#boxes.length ?
+                            this.#boxes.length :
+                            data.length;
         for (let i = 0; i < textLength; i++) {
             if (isNaN(data[i]))
                 continue;
 
-            this.boxes[i].value = data[i];
+            this.#boxes[i].value = data[i];
         }
 
         this.#canValidate();
@@ -158,7 +179,7 @@ class AutoInput {
      * @param {Function} callback Callback to call when the code is validated.
      */
     onValidate(callback) {
-        this.callback = callback;
+        this.#callback = callback;
     }
 
     /**
@@ -167,8 +188,8 @@ class AutoInput {
      */
     getCode() {
         let code = "";
-        this.boxes.forEach((e) => {
-            code += e.value;
+        this.#boxes.forEach((element) => {
+            code += element.value;
         });
 
         return code;
@@ -178,8 +199,8 @@ class AutoInput {
      * Reset all the input fields.
      */
     removeEntries() {
-        this.boxes.forEach((e) => {
-            e.value = "";
+        this.#boxes.forEach((element) => {
+            element.value = "";
         });
     }
 }
