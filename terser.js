@@ -23,6 +23,7 @@ function compressDirectory(dir) {
             const newPath = `.${sep}dist${sep}${relative('.', resolve(location, "../../"))}`;
             writeFileSync(
                 newPath + file.name.slice(0, -2) + 'min.js',
+                '/* Create By Pioupia https://github.com/pioupia/auto-input-a2f/ | MIT License */\n' +
                 terserResult.code,
                 'utf8',
                 {
