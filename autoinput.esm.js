@@ -5,12 +5,14 @@ class AutoInput {
     #selectAuto;
     #canPast;
     #createAuto;
+    #beforeFire;
     #parent;
     #validate;
     #onCreate;
     #boxes;
     #validatingTime;
     #callback;
+    #isEnable;
 
     /**
      * The AutoInput class
@@ -19,6 +21,7 @@ class AutoInput {
      * @param {boolean} options.selectAuto If the input should auto select the first input field.
      * @param {boolean} options.canPast If the input should allow pasting.
      * @param {boolean} options.createAuto If the AutoInput should create the HTML inputs automatically.
+     * @param {number} options.beforeFire Will waits `beforeFire` milliseconds before firing the event.
      * @param {Function} options.onCreate The callback when the AutoInput creates the HTML inputs.
      * @param {HTMLElement} options.parent The parent were the child will automatically generate the HTML inputs.
      * @param {HTMLElement} options.validate The validate button to validate the entry.
@@ -28,6 +31,7 @@ class AutoInput {
         this.#selectAuto = options.selectAuto || true;
         this.#canPast = options.canPast || true;
         this.#createAuto = options.createAuto || false;
+        this.#beforeFire = options.beforeFire ?? 400;
         this.#parent = options.parent
                         || document.getElementById("a2fParent")
                         || document.querySelector("[data-parent-a2f]");
@@ -86,7 +90,7 @@ class AutoInput {
 
             element.onpaste = (e) => this.#handlePaste(e);
             element.onkeypress = (e) => e.preventDefault();
-            element.onkeyup = event => this.#onKeyUp(event);
+            element.onkeydown = event => this.#onKeyDown(event);
         }
     }
 
@@ -102,7 +106,7 @@ class AutoInput {
 
         setTimeout(() => {
             if (this.#validatingTime &&
-                this.#validatingTime + 400 > Date.now())
+                this.#validatingTime + this.#beforeFire > Date.now())
                 return;
 
             if (this.#autoEnd) {
@@ -110,12 +114,14 @@ class AutoInput {
                     return this.#callback(this.getCode());
                 this.#validate?.click();
             }
-        }, 400);
+        }, this.#beforeFire);
     }
 
-    #onKeyUp(event) {
+    #onKeyDown(event) {
         const { key, target } = event;
         event.preventDefault();
+
+        this.#validatingTime = 0;
 
         switch (key) {
             case "Backspace":
@@ -143,7 +149,7 @@ class AutoInput {
                 if (isNaN(key))
                     return;
                 target.value = key;
-                this.#onKeyUp({ key: "ArrowRight", target, preventDefault: () => null });
+                this.#onKeyDown({ key: "ArrowRight", target, preventDefault: () => null });
                 this.#canValidate();
                 break;
         } 
@@ -202,6 +208,27 @@ class AutoInput {
         this.#boxes.forEach((element) => {
             element.value = "";
         });
+    }
+
+    /**
+     * Stop the auto-end event.
+     */
+    stopAutoEnd() {
+        this.#autoEnd = false;
+    }
+
+    /**
+     * Start the auto-end event.
+     */
+    startAutoEnd() {
+        this.#autoEnd = true;
+    }
+
+    /**
+     * Toggle the auto-end event.
+     */
+    toggleAutoEnd() {
+        this.#autoEnd = !this.#autoEnd;
     }
 }
 
