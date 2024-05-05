@@ -17,7 +17,7 @@
     "scripts": {
         "prepublish": "npm run build && npm run sha",
         "build": "node terser.js",
-        "sha": "cd src && shasum -b -a 384 *.js | awk '{ print $1 }' | xxd -r -p | base64"
+        "sha": "shasum -b -a 384 $1 | awk '{ print $1 }' | xxd -r -p | base64"
     },
     "devDependencies": {
         "terser": "^5.31.0"
