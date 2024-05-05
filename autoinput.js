@@ -5,6 +5,7 @@ class AutoInput {
     #selectAuto;
     #canPast;
     #createAuto;
+    #buttonCallback;
     #beforeFire;
     #parent;
     #validate;
@@ -12,25 +13,26 @@ class AutoInput {
     #boxes;
     #validatingTime;
     #callback;
-    #isEnable;
 
     /**
      * The AutoInput class
-     * @param {object} options The options for the AutoInput.
-     * @param {boolean} options.autoEnd If the input should fired an event when the text is completed.
-     * @param {boolean} options.selectAuto If the input should auto select the first input field.
-     * @param {boolean} options.canPast If the input should allow pasting.
-     * @param {boolean} options.createAuto If the AutoInput should create the HTML inputs automatically.
-     * @param {number} options.beforeFire Will waits `beforeFire` milliseconds before firing the event.
-     * @param {Function} options.onCreate The callback when the AutoInput creates the HTML inputs.
-     * @param {HTMLElement} options.parent The parent were the child will automatically generate the HTML inputs.
-     * @param {HTMLElement} options.validate The validate button to validate the entry.
+     * @param {object=} options The options for the AutoInput.
+     * @param {boolean=} [options.autoEnd = true] If the input should fired an event when the text is completed.
+     * @param {boolean=} [options.selectAuto = true] If the input should auto select the first input field.
+     * @param {boolean=} [options.canPast = true] If the input should allow pasting.
+     * @param {boolean=} [options.createAuto = false] If the AutoInput should create the HTML inputs automatically.
+     * @param {boolean=} [options.buttonCallback = false] Add automatically an event listener to the validate button, and on press will fired the callback.
+     * @param {number=} [options.beforeFire = 400] Will waits `beforeFire` milliseconds before firing the event.
+     * @param {Function=} options.onCreate The callback when the AutoInput creates the HTML inputs.
+     * @param {HTMLElement=} options.parent The parent were the child will automatically generate the HTML inputs.
+     * @param {HTMLElement=} options.validate The validate button to validate the entry.
      */
     constructor(options = {}) {
         this.#autoEnd = options.autoEnd || true;
         this.#selectAuto = options.selectAuto || true;
         this.#canPast = options.canPast || true;
         this.#createAuto = options.createAuto || false;
+        this.#buttonCallback = options.buttonCallback || false;
         this.#beforeFire = options.beforeFire ?? 400;
         this.#parent = options.parent
                         || document.getElementById("a2fParent")
@@ -92,6 +94,16 @@ class AutoInput {
             element.onkeypress = (e) => e.preventDefault();
             element.onkeydown = event => this.#onKeyDown(event);
         }
+
+        if (this.#buttonCallback && !this.#validate)
+            throw new Error("The button does not exist. Please fill the validate option, or create an element with the data-button-validate attribute.");
+        if (this.#buttonCallback)
+            this.#validate.onclick = () => {
+                const code = this.getCode();
+
+                if (code.length === this.#boxes.length)
+                    this.#callback(code);
+            };
     }
 
     #canValidate() {
