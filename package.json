@@ -3,9 +3,23 @@
     "version": "1.0.5",
     "description": "Allows you to automatically change input once it is filled in. Then validate the form when all inputs are filled in correctly.",
     "repository": "https://github.com/pioupia/auto-input-a2f",
-    "author": "Pioupia <pioupiadeux@gmail.com>",
+    "author": "Pioupia",
     "license": "MIT",
     "main": "./dist/autoinput.min.js",
     "module": "./dist/autoinput.esm.js",
-    "keywords": ["front-end", "autoinput", "autochange", "a2f", "autoform"]
+    "keywords": [
+        "front-end",
+        "autoinput",
+        "autochange",
+        "a2f",
+        "autoform"
+    ],
+    "scripts": {
+        "prepublish": "npm run build && npm run sha",
+        "build": "node terser.js",
+        "sha": "cd src && shasum -b -a 384 *.js | awk '{ print $1 }' | xxd -r -p | base64"
+    },
+    "devDependencies": {
+        "terser": "^5.31.0"
+    }
 }
