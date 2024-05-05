@@ -12,6 +12,7 @@ class AutoInput {
     #boxes;
     #validatingTime;
     #callback;
+    #isEnable;
 
     /**
      * The AutoInput class
@@ -207,5 +208,26 @@ class AutoInput {
         this.#boxes.forEach((element) => {
             element.value = "";
         });
+    }
+
+    /**
+     * Stop the auto-end event.
+     */
+    stopAutoEnd() {
+        this.#autoEnd = false;
+    }
+
+    /**
+     * Start the auto-end event.
+     */
+    startAutoEnd() {
+        this.#autoEnd = true;
+    }
+
+    /**
+     * Toggle the auto-end event.
+     */
+    toggleAutoEnd() {
+        this.#autoEnd = !this.#autoEnd;
     }
 }
