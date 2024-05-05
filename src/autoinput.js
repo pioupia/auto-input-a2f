@@ -86,7 +86,7 @@ class AutoInput {
 
             element.onpaste = (e) => this.#handlePaste(e);
             element.onkeypress = (e) => e.preventDefault();
-            element.onkeyup = event => this.#onKeyUp(event);
+            element.onkeydown = event => this.#onKeyDown(event);
         }
     }
 
@@ -113,7 +113,7 @@ class AutoInput {
         }, 400);
     }
 
-    #onKeyUp(event) {
+    #onKeyDown(event) {
         const { key, target } = event;
         event.preventDefault();
 
@@ -143,7 +143,7 @@ class AutoInput {
                 if (isNaN(key))
                     return;
                 target.value = key;
-                this.#onKeyUp({ key: "ArrowRight", target, preventDefault: () => null });
+                this.#onKeyDown({ key: "ArrowRight", target, preventDefault: () => null });
                 this.#canValidate();
                 break;
         } 
