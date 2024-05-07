@@ -28,11 +28,11 @@ class AutoInput {
      * @param {HTMLElement=} options.validate The validate button to validate the entry.
      */
     constructor(options = {}) {
-        this.#autoEnd = options.autoEnd || true;
-        this.#selectAuto = options.selectAuto || true;
-        this.#canPast = options.canPast || true;
-        this.#createAuto = options.createAuto || false;
-        this.#buttonCallback = options.buttonCallback || false;
+        this.#autoEnd = options.autoEnd ?? true;
+        this.#selectAuto = options.selectAuto ?? true;
+        this.#canPast = options.canPast ?? true;
+        this.#createAuto = options.createAuto ?? false;
+        this.#buttonCallback = options.buttonCallback ?? false;
         this.#beforeFire = options.beforeFire ?? 400;
         this.#parent = options.parent
                         || document.getElementById("a2fParent")
@@ -58,13 +58,15 @@ class AutoInput {
             if (this.#onCreate instanceof Function)
                 el = this.#onCreate(el, i) || el;
 
-            if (i == 3) {
+            if (i === 3) {
                 let span = document.createElement("span");
                 span.textContent = "-";
 
-                span = this.#onCreate(span, i);
-                if (span)
-                    this.#parent.appendChild(span);
+                if (this.#onCreate instanceof Function) {
+                    span = this.#onCreate(span, i);
+                    if (span)
+                        this.#parent.appendChild(span);
+                }
             }
 
             this.#parent.appendChild(el);
@@ -91,7 +93,6 @@ class AutoInput {
             const element = this.#boxes[i];
 
             element.onpaste = (e) => this.#handlePaste(e);
-            element.onkeypress = (e) => e.preventDefault();
             element.onkeydown = event => this.#onKeyDown(event);
         }
 
@@ -131,7 +132,9 @@ class AutoInput {
 
     #onKeyDown(event) {
         const { key, target } = event;
-        event.preventDefault();
+
+        if (key !== "v" || (!event.ctrlKey && !event.metaKey))
+            event.preventDefault();
 
         this.#validatingTime = 0;
 
