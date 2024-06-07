@@ -1,8 +1,8 @@
 [![](https://img.shields.io/npm/v/auto-input-a2f)](https://www.npmjs.com/package/auto-input-a2f)
 [![](https://img.shields.io/npm/dm/auto-input-a2f)](https://www.npmjs.com/package/auto-input-a2f)
 
-<h1 align="center">Auto Input A2F</h1>
-<p align="center">Allows you to automatically change input once it is filled in. Then validate the form when all inputs are filled in correctly.</p>
+# Auto Input for 2FA fields
+Allows you to automatically change input once it is filled in. Then validate the form when all inputs are filled in correctly.
 
 <p align="center">
     <a href="https://github.com/pioupia/auto-input-a2f">
@@ -10,132 +10,81 @@
     </a>
 </p>
 
+## Table of content:
+- [Installation](#installation)
+    - [npm](#npm)
+    - [sources](#from-sources)
+- [Usage](#usage)
+    - [import](#import)
+
 ## Installation
 
-#### With npm :
+### npm:
+With npm:
 ```sh
 npm i auto-input-a2f
 ```
-If you use expressjs :
+
+With pnpm:
+```sh
+npm i auto-input-a2f
+```
+
+With yarn:
+```sh
+yarn add auto-input-a2f
+```
+
+If you are using a web server such as [`expressjs`](http://expressjs.com/), you need to set the file as static files to serve them. For example, for `expressjs` you'll need:
 ```js
-app.use(express.static('.'));
+app.use(express.static('/node_modules/auto-input-a2f/dist/'));
 ```
 
 In your html file :
 ```html
-<!-- In node_modules -->
-<script src="/path/to/autoinput.min.js"></script>
+<script src="/autoinput.min.js" integrity="sha384-3xMAq3v420qJ9QycjUquk5fzV5AsgAc2mHbawmO7Ww47t8uYVG77RAbjSPXwoUdt" crossorigin="anonymous"></script>
+```
+For all other files, you can [get the shashum below](#minified-javascript)
+
+### From sources:
+
+#### Minified JavaScript:
+```html
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js" integrity="sha384-3xMAq3v420qJ9QycjUquk5fzV5AsgAc2mHbawmO7Ww47t8uYVG77RAbjSPXwoUdt" crossorigin="anonymous"></script>
 ```
 
-#### Without npm :
+#### Unminified JavaScript:
 ```html
-<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js"></script>
-```
-Or non minified :
-
-```html
-<script src="https://pioupia.github.io/auto-input-a2f/autoinput.js"></script>
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.js" integrity="sha384-CF8ZxUqjo775do4laX6zgbVaceTNKvlvgx98HrwB73Wmqkmj2kaGmxVaDE/bKsb3" crossorigin="anonymous"></script>
 ```
 
 
 ## Usage
 
-If you dont want to put all the html code yourself, a function is available in javascript that will create all the code for you in one line.
-
-Init the package :
+### Import
+For `module` type, you'll need to import correctly the `AutoInput` class:
 ```js
-initAutoInput(options, callback);
+import AutoInput from "./autoinput.esm.js";
 ```
 
-The callback is optional, it's if you dont want to assigned an atribute to your button of validation.
-
-| Options  | Description | Default | Type |
-| ------------- | ------------- | ------------- | ------------- |
-| autoend  | Activates the automatic end. Notify you when the user has completely filled the captcha via the callback or by pressing your element to signal the end. | true | Boolean |
-| selectAuto  | Automatically selects the first input to be filled in when the user arrives on the page  | true | Boolean |
-| canPast | Allows user to paste a2f code | true | Boolean |
-| createAuto | Automatically creates all the html code required for validation of the a2f. | false | Boolean |
-| parent | Only if the createAuto option is activated. Defines the parent of the automatically generated html code. May not be enabled if and only if the parent contains the attribute : "data-parent-a2f" | get the attribute "data-parent-a2f" OR get the id #a2fParent | HTML element |
-
-
-If you have verified the a2f code and he's not valid, you can reset all the values with this function :
+### Initiate the class:
+First of all, you need to instantiate the `AutoInput` class:
 
 ```js
-deleteNumbersCode();
+const autoinput = new AutoInput(options);
 ```
 
-If you want to get the actual a2f code of the user, you can call this function :
-```js
-getNumbersCode() // => 123456 (String)
-```
+The class could take some `options` as an `object`. All options are optional.
 
-#### HTML
+name | type | default value | description
+---- | ---- | ------------- | -----------
+`autoEnd` | `boolean` | `true` | Fired an event when the text is completed.
+`selectAuto` | `boolean` | `true` | Will automatically focus the first input field (just after initializing fields)
+`canPast` | `boolean` | `true` | Enable / disable pasting in fields.
+`createAuto` | `boolean` | `false` | Will automatically create input field for you.
+`buttonCallback` | `boolean` | `false` | Trigger the `onClick` event of the `validate` button.
+`beforeFire` | `number` | `400` | Will waits `beforeFire` milliseconds before firing the automatic event.
+`onCreate` | `Function` | `null` | The callback when creates the input fields. This allows you to add some property on the `HTMLElement` or change it completly.
+`parent` | `HTMLElement` | `#a2fParent` or `[data-parent-a2f]` | The parent element into which the input fields will be injected.
+`validate` | `HTMLElement` | `[data-button-validate]` | The submit button to validate the 2fa code.
 
-(Only if the createAuto option is not activated)
-
-```html
-<input data-a2f type="text" placeholder="0" required>
-<input data-a2f type="text" placeholder="0" required>
-<input data-a2f type="text" placeholder="0" required>
-<input data-a2f type="text" placeholder="0" required>
-<input data-a2f type="text" placeholder="0" required>
-<input data-a2f type="text" placeholder="0" required>
-```
-
-If you want the plugin to automatically validate the a2f, put on your html element with the onlick eventlistener (only with autoend option activated) :
-
-```html
-<button onclick="myFunction()" data-button-validate>Send my A2F code</button>
-```
-OR use the callback function like that :
-
-```js
-initAutoInput(options, myFunction);
-```
-
-#### JS
-```js
-// Without callback
-function myFunction(){
-  const a2fcode = getNumbersCode(); 
-  // -> 123456 (String)
-  // Check your a2f code if you want here.
-}
-
-
-// With callback
-function myFunction(code){
-  // code => 123456 (String)
-  // Check your a2f code if you want here.
-}
-```
-
-## Shortcut
-
-You can use keyboard shortcuts, such as the back or delete key that will allow you to delete the value and go back to the previous box, or use the right arrow to go right, the left arrow to go left, and finally, the one at the top to go to the last box to complete, and the one at the bottom to go to the first box to complete.
-
-## Exemple 
-
-```html
-<div class="container">
-  <div data-parent-a2f>
-  </div>
-  <button id="sendA2F" onclick="myFunctionTest">Send</button>
-</div>
-<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js"></script>
-```
-
-```js
-initAutoInput({ createAuto: true }, myFunctionTest);
-
-function myFunctionTest(code){
-    if(typeof code !== 'number') code = getNumbersCode();
-    console.log(code) // 012345 (String)
-
-    if(!check(code)) return deleteNumbersCode();
-}
-
-function check(code){
-  return code.length == 6 && code == '012345';
-}
-```
