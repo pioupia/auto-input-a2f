@@ -37,7 +37,7 @@ async function compressDirectory(dir) {
                 recursive: true
             });
 
-        const newSize = getSize(newPath);
+        const newSize = getSize(minifyFile);
 
         cpSync(location, unminifyFile);
 
@@ -50,7 +50,7 @@ async function compressDirectory(dir) {
 
         structData.push({
             name: minName,
-            compress: ((newSize - size) / size).toString() + "0%",
+            compress: ((size - newSize) * 100 / size).toString() + "0%",
             sha: execSync(`shasum -b -a 384 '${minifyFile.replaceAll("'", "\\'")}' | awk '{ print $1 }' | xxd -r -p | base64`)
                     .toString().trim()
         });
