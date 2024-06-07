@@ -247,4 +247,4 @@ class AutoInput {
     }
 }
 
-export { AutoInput };
+export default AutoInput;
