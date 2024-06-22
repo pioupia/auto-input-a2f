@@ -79,7 +79,7 @@ The class could take some `options` as an `object`. All options are optional.
 name | type | default value | description
 ---- | ---- | ------------- | -----------
 `autoEnd` | `boolean` | `true` | Fired an event when the text is completed.
-`selectAuto` | `boolean` | `true` | Will automatically focus the first input field (just after initializing fields)
+`selectAuto` | `boolean` | `true` | Will automatically focus the first input field (just after initializing fields).
 `canPast` | `boolean` | `true` | Enable / disable pasting in fields.
 `createAuto` | `boolean` | `false` | Will automatically create input field for you.
 `buttonCallback` | `boolean` | `false` | Trigger the `onClick` event of the `validate` button.
@@ -88,3 +88,18 @@ name | type | default value | description
 `parent` | `HTMLElement` | `#a2fParent` or `[data-parent-a2f]` | The parent element into which the input fields will be injected.
 `validate` | `HTMLElement` | `[data-button-validate]` | The submit button to validate the 2fa code.
 
+#### `autoEnd`:
+This option will fired the `callback` function, and click on the `validate` button when the 2FA code is completely filled.
+
+The [`callback` function](#callback-function) can be registered by calling the public `onValidate` method.
+
+#### `createAuto`:
+This option will automatically create the input fields for you. The elements will be `appendChild` to the `parent` HTMLElement. During the creation of the input fields, if the `onCreate` callback is defined, it'll be fired for each input field.
+
+The number of created field is 6.
+
+#### `buttonCallback`:
+If enabled, when the `autoEnd` option is enabled, it will emit the `onClick` event on the `validate` HTMLButton.
+
+#### `beforeFire`:
+The time in miliseconds waited by the class before calling the [`callback` function](#callback-function), and fired the `onClick` event.
