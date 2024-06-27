@@ -103,3 +103,69 @@ If enabled, when the `autoEnd` option is enabled, it will emit the `onClick` eve
 
 #### `beforeFire`:
 The time in miliseconds waited by the class before calling the [`callback` function](#callback-function), and fired the `onClick` event.
+
+#### `onCreate`:
+This function will be called when the input fields are created. The function will take the create `HTMLElement` as argument, and should also returned an `HTMLElement` which will be added to the DOM. If nothing is returned from the function, the element will not be added.
+This can be usefull if you want to add custom classes or attributes to the input fields. Or if you want to change the type of the input fields, by adding a more complex structure to it.
+
+However, you can also completely remove the field if you do not want it.
+
+
+## Examples:
+For example, you want to create automatically 6 input fields, and validate the form when all fields are filled in correctly after 800 miliseconds.
+
+Because we have the `buttonCallback` enabled, if the user click on the validation button, the `onValidate` function will be automatically called.
+
+But we can have a problem if the user is going to click on the `validate` button before the 800 miliseconds. To avoid this, we can disable the `buttonCallback` option by calling the `stopAutoEnd` method during the server verification.
+
+For each created input fields, we want to add some classes to it. We can do this by using the `onCreate` callback.
+
+If the input field is a SPAN, we don't want a `span` element (the dash `-` between the input fields) to be added to the DOM. So we can return `null` in this case.
+
+Otherwise, we'll add some classes to our element. But if the inserted element is the fourth one, we'll add a margin to the left.
+
+
+```js
+const input = new AutoInput({
+	createAuto: true,
+	parent: document.getElementById("2fa_container"),
+	validate: document.getElementById("validate_2fa_code"),
+	buttonCallback: true,
+	beforeFire: 800,
+	onCreate: (element, i) => {
+		if (element.tagName === "SPAN")
+			return (null);
+		element.classList.add("form-control");
+		element.classList.add("otp_input");
+		element.classList.add(i === 3 ? "ms-3" : "ms-1");
+		element.classList.add("me-1");
+		element.classList.add("text-center");
+
+		return (element);
+	}
+});
+
+function onValidate(code) {
+	// do something with the code...
+	input.stopAutoEnd();
+
+	fetch("/api/code", {
+		method: "POST",
+		body: JSON.stringify({ code }),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	}).then(res => {
+		if (res.ok) {
+			// do something...
+		} else {
+			// do something...
+
+			// enable the autoEnd
+			input.startAutoEnd();
+		}
+	});
+}
+
+input.onValidate(onValidate);
+```
