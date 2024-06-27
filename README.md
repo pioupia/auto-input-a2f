@@ -111,7 +111,7 @@ This can be usefull if you want to add custom classes or attributes to the input
 However, you can also completely remove the field if you do not want it.
 
 
-## Examples:
+## Example:
 For example, you want to create automatically 6 input fields, and validate the form when all fields are filled in correctly after 800 miliseconds.
 
 Because we have the `buttonCallback` enabled, if the user click on the validation button, the `onValidate` function will be automatically called.
