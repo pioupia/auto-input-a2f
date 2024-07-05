@@ -118,7 +118,7 @@ class AutoInput {
         this.#validatingTime = Date.now();
 
         setTimeout(() => {
-            if (this.#validatingTime &&
+            if (!this.#validatingTime ||
                 this.#validatingTime + this.#beforeFire > Date.now())
                 return;
 
@@ -138,21 +138,28 @@ class AutoInput {
 
         this.#validatingTime = 0;
 
+        let focusBox = -1;
+        for (let i = 0; i < this.#boxes.length; i++) {
+            if (this.#boxes[i] !== target) 
+                continue;
+
+            focusBox = i;
+        }
+
         switch (key) {
             case "Backspace":
             case "Delete":
                 target.value = "";
             case "ArrowLeft":
-                let prevElement = target.previousElementSibling;
-                if (prevElement?.tagName === "SPAN")
-                    prevElement = prevElement.previousElementSibling;
-                prevElement?.focus();
+                if (focusBox === 0)
+                    return;
+                this.#boxes[focusBox - 1]?.focus();
                 break;
             case "ArrowRight":
-                let nextElement = target.nextElementSibling;
-                if (nextElement?.tagName === "SPAN")
-                    nextElement = nextElement.nextElementSibling;
-                nextElement?.focus();
+               if (focusBox + 1 === this.#boxes.length)
+                    return;
+
+               this.#boxes[focusBox + 1]?.focus();
                 break;
             case "ArrowUp":
                 this.#boxes.item(this.#boxes.length - 1).focus();
