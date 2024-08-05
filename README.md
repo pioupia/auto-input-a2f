@@ -16,6 +16,12 @@ Allows you to automatically change input once it is filled in. Then validate the
     - [sources](#from-sources)
 - [Usage](#usage)
     - [import](#import)
+    - [Init the class](#initiate-the-class)
+    - [Methods](#methods)
+- [Example](#example)
+    - [Automatic fields creation](#automatic-fields-creation)
+    - [Improved customization](#manual-fields-creation)
+
 
 ## Installation
 
@@ -42,7 +48,7 @@ app.use(express.static('/node_modules/auto-input-a2f/dist/'));
 
 In your html file :
 ```html
-<script src="/autoinput.min.js" integrity="sha384-3xMAq3v420qJ9QycjUquk5fzV5AsgAc2mHbawmO7Ww47t8uYVG77RAbjSPXwoUdt" crossorigin="anonymous"></script>
+<script src="/autoinput.min.js" integrity="sha384-p91U1bCVTJMP+YhKZTn2fYvOScTU3xokkfMUfc7A7XY5gndM1h2+8qbdtXICnS/b" crossorigin="anonymous"></script>
 ```
 For all other files, you can [get the shashum below](#minified-javascript)
 
@@ -50,12 +56,12 @@ For all other files, you can [get the shashum below](#minified-javascript)
 
 #### Minified JavaScript:
 ```html
-<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js" integrity="sha384-3xMAq3v420qJ9QycjUquk5fzV5AsgAc2mHbawmO7Ww47t8uYVG77RAbjSPXwoUdt" crossorigin="anonymous"></script>
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.min.js" integrity="sha384-p91U1bCVTJMP+YhKZTn2fYvOScTU3xokkfMUfc7A7XY5gndM1h2+8qbdtXICnS/b" crossorigin="anonymous"></script>
 ```
 
 #### Unminified JavaScript:
 ```html
-<script src="https://pioupia.github.io/auto-input-a2f/autoinput.js" integrity="sha384-CF8ZxUqjo775do4laX6zgbVaceTNKvlvgx98HrwB73Wmqkmj2kaGmxVaDE/bKsb3" crossorigin="anonymous"></script>
+<script src="https://pioupia.github.io/auto-input-a2f/autoinput.js" integrity="sha384-fD5DnbGvuM3Yat97IQjMLbrbs0KGFPOAH9FMqB5ygLH6SALJvfT4s/UnDw/svN76" crossorigin="anonymous"></script>
 ```
 
 
